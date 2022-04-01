@@ -1,8 +1,8 @@
 package com.posadeus.btc
 
-class Checkout {
+class Checkout(private val rule: Rule) {
 
   fun price(product: String): Int =
-      if (product == "A") 50
+      if (product == "A") rule.productPrice
       else 0
 }
