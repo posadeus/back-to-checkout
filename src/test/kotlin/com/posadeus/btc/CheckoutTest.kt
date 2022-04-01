@@ -28,4 +28,10 @@ class CheckoutTest {
 
     assertTrue { checkout.price("B") == 30 }
   }
+
+  @Test
+  internal fun `price of cart with A,B product is eighty`() {
+
+    assertTrue { checkout.price("AB") == 80 }
+  }
 }
