@@ -1,8 +1,7 @@
 package com.posadeus.btc
 
-class Checkout(private val rule: Rule) {
+class Checkout(private val rules: List<Rule>) {
 
   fun price(product: String): Int =
-      if (product == rule.productName) rule.productPrice
-      else 0
+      rules.first { product == it.productName }.productPrice
 }
