@@ -5,11 +5,17 @@ import kotlin.test.assertTrue
 
 class CheckoutTest {
 
-    private val checkout = Checkout()
+  private val checkout = Checkout()
 
-    @Test
-    internal fun `price of empty cart is zero`() {
+  @Test
+  internal fun `price of empty cart is zero`() {
 
-        assertTrue { checkout.price("") == 0 }
-    }
+    assertTrue { checkout.price("") == 0 }
+  }
+
+  @Test
+  internal fun `price of cart with A product is fifty`() {
+
+    assertTrue { checkout.price("A") == 50 }
+  }
 }
