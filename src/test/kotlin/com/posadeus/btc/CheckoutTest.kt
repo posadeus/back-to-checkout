@@ -7,7 +7,9 @@ class CheckoutTest {
 
   private val rules = listOf(Rule("", 0),
                              Rule("A", 50),
-                             Rule("B", 30))
+                             Rule("B", 30),
+                             Rule("C", 20),
+                             Rule("D", 15))
 
   private val checkout = Checkout(rules)
 
@@ -33,5 +35,11 @@ class CheckoutTest {
   internal fun `price of cart with A,B product is eighty`() {
 
     assertTrue { checkout.price("AB") == 80 }
+  }
+
+  @Test
+  internal fun `price of cart with A,B,C,D product is a hundred fifteen`() {
+
+    assertTrue { checkout.price("CDBA") == 115 }
   }
 }
