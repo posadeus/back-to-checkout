@@ -2,7 +2,7 @@ package com.posadeus.btc
 
 class Checkout(private val rules: List<Rule>) {
 
-  private var products: MutableMap<String, PromoPrice> = mutableMapOf()
+  private var products: Map<String, PromoPrice> = mapOf()
 
   fun price(products: String): Int {
 
@@ -23,18 +23,19 @@ class Checkout(private val rules: List<Rule>) {
 
     if (products.isEmpty()) {
 
-      products = mutableMapOf(product to PromoPrice(1, scan(product)))
+      products = mapOf(product to PromoPrice(1, scan(product)))
     }
     else {
 
       if (products.containsKey(product)) {
 
-        products[product] = products[product]!!.copy(quantity = products[product]!!.quantity.plus(1),
-                                                     price = priceWithPromo(product))
+        products =
+            HashMap(products + mapOf(product to products[product]!!.copy(quantity = products[product]!!.quantity.plus(1),
+                                                                         price = priceWithPromo(product))))
       }
       else {
 
-        products.put(product, PromoPrice(1, scan(product)))
+        products = HashMap(products + mapOf(product to PromoPrice(1, scan(product))))
       }
     }
   }
