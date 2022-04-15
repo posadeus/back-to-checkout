@@ -19,7 +19,7 @@ class Checkout(private val rules: List<Rule>) {
 
     receipt.products = if (receipt.isEmpty()) {
 
-      mapOf(product to PromoPrice(1, scan(product)))
+      addProductToReceipt(product)
     }
     else {
 
@@ -36,8 +36,11 @@ class Checkout(private val rules: List<Rule>) {
       }
       else {
 
-        HashMap(receipt.products + mapOf(product to PromoPrice(1, scan(product))))
+        addProductToReceipt(product)
       }
+
+  private fun addProductToReceipt(product: String): Map<String, PromoPrice> =
+      HashMap(receipt.products + mapOf(product to PromoPrice(1, scan(product))))
 
   private fun priceWithPromo(product: String): Int =
       if (rules.first { product == it.productName }.promo?.pieces == receipt.products[product]!!.quantity.plus(1))
