@@ -5,11 +5,11 @@ import kotlin.test.assertTrue
 
 class CheckoutTest {
 
-  private val rules = listOf(Rule("", 0),
-                             Rule("A", 50),
-                             Rule("B", 30),
-                             Rule("C", 20),
-                             Rule("D", 15))
+  private val rules = listOf(Rule("", 0, null),
+                             Rule("A", 50, Promo(3, 130)),
+                             Rule("B", 30, null),
+                             Rule("C", 20, null),
+                             Rule("D", 15, null))
 
   private val checkout = Checkout(rules)
 
@@ -41,5 +41,11 @@ class CheckoutTest {
   internal fun `price of cart with A,B,C,D product is a hundred fifteen`() {
 
     assertTrue { checkout.price("CDBA") == 115 }
+  }
+
+  @Test
+  internal fun `price of cart with triple A product is a hundred thirty`() {
+
+    assertTrue { checkout.price("AAA") == 130 }
   }
 }
