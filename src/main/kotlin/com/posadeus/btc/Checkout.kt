@@ -2,7 +2,7 @@ package com.posadeus.btc
 
 class Checkout(private val rules: List<Rule>) {
 
-  private var receipt: Receipt = Receipt(emptyMap())
+  private val receipt: Receipt = Receipt(emptyMap())
 
   fun price(products: String): Int {
 
@@ -12,12 +12,8 @@ class Checkout(private val rules: List<Rule>) {
           .forEach { createReceipt(it) }
     }
 
-    return calculateTotal()
+    return receipt.getTotal()
   }
-
-  private fun calculateTotal(): Int =
-      receipt.products.map { it.value.price }
-          .reduce { acc, i -> acc + i }
 
   private fun createReceipt(product: String) {
 
