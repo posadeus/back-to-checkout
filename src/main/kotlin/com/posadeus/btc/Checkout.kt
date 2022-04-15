@@ -2,26 +2,26 @@ package com.posadeus.btc
 
 class Checkout(private val rules: List<Rule>) {
 
-  private var products: Map<String, PromoPrice> = emptyMap()
+  private var receipt: Receipt = Receipt(emptyMap())
 
   fun price(products: String): Int {
 
     when {
       products.isEmpty() -> return 0
       else -> products.chunked(1)
-          .forEach { collectProduct(it) }
+          .forEach { createReceipt(it) }
     }
 
     return calculateTotal()
   }
 
   private fun calculateTotal(): Int =
-      products.map { it.value.price }
+      receipt.products.map { it.value.price }
           .reduce { acc, i -> acc + i }
 
-  private fun collectProduct(product: String) {
+  private fun createReceipt(product: String) {
 
-    products = if (products.isEmpty()) {
+    receipt.products = if (receipt.products.isEmpty()) {
 
       mapOf(product to PromoPrice(1, scan(product)))
     }
@@ -32,21 +32,21 @@ class Checkout(private val rules: List<Rule>) {
   }
 
   private fun addQuantityAndPriceToProduct(product: String) =
-      if (products.containsKey(product)) {
+      if (receipt.products.containsKey(product)) {
 
-        HashMap(products +
-                mapOf(product to products[product]!!.copy(quantity = products[product]!!.quantity.plus(1),
-                                                          price = priceWithPromo(product))))
+        HashMap(receipt.products +
+                mapOf(product to receipt.products[product]!!.copy(quantity = receipt.products[product]!!.quantity.plus(1),
+                                                                  price = priceWithPromo(product))))
       }
       else {
 
-        HashMap(products + mapOf(product to PromoPrice(1, scan(product))))
+        HashMap(receipt.products + mapOf(product to PromoPrice(1, scan(product))))
       }
 
   private fun priceWithPromo(product: String): Int =
-      if (rules.first { product == it.productName }.promo?.pieces == products[product]!!.quantity.plus(1))
+      if (rules.first { product == it.productName }.promo?.pieces == receipt.products[product]!!.quantity.plus(1))
         rules.first { product == it.productName }.promo!!.price
-      else products[product]!!.price +
+      else receipt.products[product]!!.price +
            rules.first { product == it.productName }.productPrice
 
   private fun scan(product: String): Int =
@@ -56,3 +56,4 @@ class Checkout(private val rules: List<Rule>) {
 
 data class PromoPrice(val quantity: Int,
                       val price: Int)
+
