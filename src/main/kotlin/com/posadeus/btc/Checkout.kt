@@ -17,7 +17,7 @@ class Checkout(private val rules: List<Rule>) {
 
   private fun createReceipt(product: String) {
 
-    receipt.products = if (receipt.products.isEmpty()) {
+    receipt.products = if (receipt.isEmpty()) {
 
       mapOf(product to PromoPrice(1, scan(product)))
     }
