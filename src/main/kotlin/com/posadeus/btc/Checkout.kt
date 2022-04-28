@@ -7,32 +7,35 @@ class Checkout(private val rules: List<Rule>) {
   fun price(products: String): Int {
 
     when {
+
       products.isEmpty() -> return 0
+
       else -> products.chunked(1)
-          .forEach { createReceipt(it) }
+          .forEach { receipt.products = addProductToReceipt(it) }
     }
 
     return receipt.getTotal()
   }
 
-  private fun createReceipt(product: String) {
+  private fun addProductToReceipt(product: String): Map<String, PromoPrice> =
+      when {
 
-    receipt.products =
-        if (receipt.isEmpty()) addNewProductToReceipt(product)
-        else addQuantityAndPriceToProduct(product)
-  }
+        receipt.isEmpty() -> addNewProductToReceipt(product)
 
-  private fun addQuantityAndPriceToProduct(product: String) =
-      if (receipt.products.containsKey(product)) {
+        receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
 
-        HashMap(receipt.products +
-                mapOf(product to receipt.products[product]!!.copy(quantity = receipt.products[product]!!.quantity.plus(1),
-                                                                  price = scan(product))))
+        else -> addNewProductToReceipt(product)
       }
-      else addNewProductToReceipt(product)
 
   private fun addNewProductToReceipt(product: String): Map<String, PromoPrice> =
       HashMap(receipt.products + mapOf(product to PromoPrice(1, scan(product))))
+
+  private fun updateProductAlreadyInTheReceipt(product: String): Map<String, PromoPrice> =
+      HashMap(receipt.products +
+              mapOf(product to
+                        receipt.products[product]!!.copy(
+                            quantity = receipt.products[product]!!.quantity.plus(1),
+                            price = scan(product))))
 
   private fun scan(product: String): Int {
 
@@ -41,7 +44,7 @@ class Checkout(private val rules: List<Rule>) {
     return if (isProductInPromo(productRule, product))
       productRule.promo?.price ?: productRule.productPrice
     else
-      receipt.products[product]?.price ?: 0 + productRule.productPrice
+      receipt.products[product]?.price ?: (0 + productRule.productPrice)
   }
 
   private fun isProductInPromo(productRule: Rule, product: String) =
