@@ -20,31 +20,31 @@ class CheckoutTest {
   }
 
   @Test
-  internal fun `price of cart with A product is fifty`() {
+  internal fun `price of cart with A product is 50`() {
 
     assertTrue { checkout.price("A") == 50 }
   }
 
   @Test
-  internal fun `price of cart with B product is thirty`() {
+  internal fun `price of cart with B product is 30`() {
 
     assertTrue { checkout.price("B") == 30 }
   }
 
   @Test
-  internal fun `price of cart with A,B product is eighty`() {
+  internal fun `price of cart with A,B product is 80`() {
 
     assertTrue { checkout.price("AB") == 80 }
   }
 
   @Test
-  internal fun `price of cart with A,B,C,D product is a hundred fifteen`() {
+  internal fun `price of cart with A,B,C,D product is 115`() {
 
     assertTrue { checkout.price("CDBA") == 115 }
   }
 
   @Test
-  internal fun `price of cart with triple A product is a hundred thirty`() {
+  internal fun `price of cart with triple A product is 130`() {
 
     assertTrue { checkout.price("AAA") == 130 }
   }
@@ -53,5 +53,11 @@ class CheckoutTest {
   internal fun `price of cart with double triple A product is 260`() {
 
     assertTrue { checkout.price("AAAAAA") == 260 }
+  }
+
+  @Test
+  internal fun `price of cart with double A product is 100`() {
+
+    assertTrue { checkout.price("AA") == 100 }
   }
 }
