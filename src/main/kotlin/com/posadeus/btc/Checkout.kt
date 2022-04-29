@@ -27,9 +27,9 @@ class Checkout(private val rules: List<Rule>) {
   private fun updateProductAlreadyInTheReceipt(product: String): Map<String, PromoPrice> =
       HashMap(receipt.products +
               mapOf(product to
-                        receipt.products[product]!!.copy(
-                            quantity = receipt.products[product]!!.quantity.plus(1),
-                            price = scan(product))))
+                        receipt.products[product]!!
+                            .copy(quantity = receipt.products[product]!!.quantity.plus(1),
+                                  price = scan(product))))
 
   private fun scan(product: String): Int {
 
