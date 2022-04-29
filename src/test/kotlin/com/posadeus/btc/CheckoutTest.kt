@@ -44,26 +44,32 @@ class CheckoutTest {
   }
 
   @Test
-  internal fun `price of cart with triple A product is 130`() {
+  internal fun `price of cart with three A product is 130`() {
 
     assertTrue { checkout.price("AAA") == 130 }
   }
 
   @Test
-  internal fun `price of cart with double triple A product is 260`() {
+  internal fun `price of cart with six A product is 260`() {
 
     assertTrue { checkout.price("AAAAAA") == 260 }
   }
 
   @Test
-  internal fun `price of cart with double A product is 100`() {
+  internal fun `price of cart with two A product is 100`() {
 
     assertTrue { checkout.price("AA") == 100 }
   }
 
   @Test
-  internal fun `price of cart with fourth A product is 180`() {
+  internal fun `price of cart with four A product is 180`() {
 
     assertTrue { checkout.price("AAAA") == 180 }
+  }
+
+  @Test
+  internal fun `price of cart with three A and B product is 160`() {
+
+    assertTrue { checkout.price("AAAB") == 160 }
   }
 }
