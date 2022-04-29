@@ -43,7 +43,7 @@ class Checkout(private val rules: List<Rule>) {
       else
         productRule.promo.price
     else
-      receipt.products[product]?.price ?: (0 + productRule.productPrice)
+      productRule.productPrice
   }
 
   private fun isProductInPromo(promoPieces: Int, quantity: Int): Boolean =
