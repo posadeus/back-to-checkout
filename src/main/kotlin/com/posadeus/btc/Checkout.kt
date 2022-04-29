@@ -7,9 +7,7 @@ class Checkout(private val rules: List<Rule>) {
   fun price(products: String): Int {
 
     when {
-
       products.isEmpty() -> return 0
-
       else -> products.chunked(1)
           .forEach { receipt.products = addProductToReceipt(it) }
     }
@@ -19,11 +17,8 @@ class Checkout(private val rules: List<Rule>) {
 
   private fun addProductToReceipt(product: String): Map<String, PromoPrice> =
       when {
-
         receipt.isEmpty() -> addNewProductToReceipt(product)
-
         receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
-
         else -> addNewProductToReceipt(product)
       }
 
