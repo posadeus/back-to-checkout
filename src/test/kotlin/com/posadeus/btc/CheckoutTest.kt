@@ -7,7 +7,7 @@ class CheckoutTest {
 
   private val rules = listOf(Rule("", 0, null),
                              Rule("A", 50, Promo(3, 130)),
-                             Rule("B", 30, null),
+                             Rule("B", 30, Promo(2, 45)),
                              Rule("C", 20, null),
                              Rule("D", 15, null))
 
@@ -71,5 +71,11 @@ class CheckoutTest {
   internal fun `price of cart with three A and B product is 160`() {
 
     assertTrue { checkout.price("AAAB") == 160 }
+  }
+
+  @Test
+  internal fun `price of cart with three A and two B product is 175`() {
+
+    assertTrue { checkout.price("AAABB") == 175 }
   }
 }
