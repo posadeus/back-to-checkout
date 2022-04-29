@@ -44,7 +44,7 @@ class Checkout(private val rules: List<Rule>) {
     val promoPieces = productRule.promo?.pieces
     val quantity = receipt.products[product]?.quantity
 
-    if (promoPieces != null && quantity != null) {
+    return if (promoPieces != null && quantity != null) {
 
       if (isProductInPromo(promoPieces, quantity)) {
 
@@ -52,21 +52,21 @@ class Checkout(private val rules: List<Rule>) {
 
           val discountMultiplier = quantity.plus(1) / promoPieces
 
-          return productRule.promo.price * discountMultiplier
+          productRule.promo.price * discountMultiplier
         }
         else {
 
-          return productRule.promo.price
+          productRule.promo.price
         }
       }
       else {
 
-        return receipt.products[product]?.price ?: (0 + productRule.productPrice)
+        receipt.products[product]?.price ?: (0 + productRule.productPrice)
       }
     }
     else {
 
-      return receipt.products[product]?.price ?: (0 + productRule.productPrice)
+      receipt.products[product]?.price ?: (0 + productRule.productPrice)
     }
   }
 
