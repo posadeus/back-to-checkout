@@ -40,27 +40,16 @@ class Checkout(private val rules: List<Rule>) {
   private fun scan(product: String): Int {
 
     val productRule = rules.first { product == it.productName }
-
     val promoPieces = productRule.promo?.pieces
     val quantity = receipt.products[product]?.quantity
 
-    return if (promoPieces != null && quantity != null) {
-
-      if (isProductInPromo(promoPieces, quantity)) {
-
-        val discountMultiplier = quantity.plus(1) / promoPieces
-
-        productRule.promo.price * discountMultiplier
-      }
-      else {
-
+    return if (promoPieces != null && quantity != null)
+      if (isProductInPromo(promoPieces, quantity))
+        productRule.promo.price * (quantity.plus(1) / promoPieces)
+      else
         productRule.promo.price
-      }
-    }
-    else {
-
+    else
       receipt.products[product]?.price ?: (0 + productRule.productPrice)
-    }
   }
 
   private fun isProductInPromo(promoPieces: Int, quantity: Int): Boolean =
