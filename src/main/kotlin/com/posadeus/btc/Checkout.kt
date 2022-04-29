@@ -17,7 +17,6 @@ class Checkout(private val rules: List<Rule>) {
 
   private fun addProductToReceipt(product: String): Map<String, PromoPrice> =
       when {
-        receipt.isEmpty() -> addNewProductToReceipt(product)
         receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
         else -> addNewProductToReceipt(product)
       }
