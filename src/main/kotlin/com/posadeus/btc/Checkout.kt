@@ -44,53 +44,34 @@ class Checkout(private val rules: List<Rule>) {
     val promoPieces = productRule.promo?.pieces
     val quantity = receipt.products[product]?.quantity
 
-    return if (isProductInPromo(promoPieces, quantity)) {
+    if (promoPieces != null && quantity != null) {
 
-      if (promoPieces != null && quantity != null) {
+      if (isProductInPromo(promoPieces, quantity)) {
 
         if (quantity.plus(1) % promoPieces == 0) {
 
           val discountMultiplier = quantity.plus(1) / promoPieces
 
-          productRule.promo.price * discountMultiplier
+          return productRule.promo.price * discountMultiplier
         }
         else {
 
-          productRule.promo.price
+          return productRule.promo.price
         }
       }
       else {
 
-        productRule.promo?.price ?: productRule.productPrice
+        return receipt.products[product]?.price ?: (0 + productRule.productPrice)
       }
     }
-    else
-      receipt.products[product]?.price ?: (0 + productRule.productPrice)
+    else {
+
+      return receipt.products[product]?.price ?: (0 + productRule.productPrice)
+    }
   }
 
-//      return if (isProductInPromo(promoPieces, quantity)) {
-//
-//      if (promoPieces != null && quantity != null) {
-//
-//        if (quantity.plus(1) % promoPieces == 0) {
-//
-//          val discountMultiplier = quantity.plus(1) / promoPieces
-//
-//          return productRule.promo.price * discountMultiplier
-//        }
-//      }
-//
-//      return productRule.promo?.price ?: productRule.productPrice
-//    }
-//    else
-//      receipt.products[product]?.price ?: (0 + productRule.productPrice)
-//  }
-
-  private fun isProductInPromo(promoPieces: Int?, quantity: Int?): Boolean =
-      if (promoPieces != null && quantity != null)
-        quantity.plus(1) % promoPieces == 0
-      else
-        false
+  private fun isProductInPromo(promoPieces: Int, quantity: Int): Boolean =
+      quantity.plus(1) % promoPieces == 0
 }
 
 data class PromoPrice(val quantity: Int,
