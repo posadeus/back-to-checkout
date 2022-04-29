@@ -35,19 +35,19 @@ class Checkout(private val rules: List<Rule>) {
 
     val productRule = rules.first { product == it.productName }
     val promoPieces = productRule.promo?.pieces
-    val quantity = receipt.products[product]?.quantity
+    val actualProductQuantity = receipt.products[product]?.quantity?.plus(1)
 
-    return if (promoPieces != null && quantity != null)
-      if (isProductInPromo(promoPieces, quantity))
-        productRule.promo.price * (quantity.plus(1) / promoPieces)
+    return if (promoPieces != null && actualProductQuantity != null)
+      if (hasValidPromotion(promoPieces, actualProductQuantity))
+        productRule.promo.price * (actualProductQuantity / promoPieces)
       else
         productRule.promo.price
     else
       productRule.productPrice
   }
 
-  private fun isProductInPromo(promoPieces: Int, quantity: Int): Boolean =
-      quantity.plus(1) % promoPieces == 0
+  private fun hasValidPromotion(promoPieces: Int, quantity: Int): Boolean =
+      quantity % promoPieces == 0
 }
 
 data class PromoPrice(val quantity: Int,
