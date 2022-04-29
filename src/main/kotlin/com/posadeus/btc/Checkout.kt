@@ -40,6 +40,8 @@ class Checkout(private val rules: List<Rule>) {
     return if (promoPieces != null && actualProductQuantity != null)
       if (hasApplicablePromotion(promoPieces, actualProductQuantity))
         productRule.promo.price * (actualProductQuantity / promoPieces)
+      else if (promoPieces < actualProductQuantity)
+        productRule.promo.price + productRule.productPrice * (actualProductQuantity - promoPieces)
       else
         productRule.productPrice * actualProductQuantity
     else
