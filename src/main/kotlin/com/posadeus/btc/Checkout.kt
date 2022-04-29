@@ -38,7 +38,7 @@ class Checkout(private val rules: List<Rule>) {
     val actualProductQuantity = receipt.products[product]?.quantity?.plus(1)
 
     return if (promoPieces != null && actualProductQuantity != null)
-      if (hasValidPromotion(promoPieces, actualProductQuantity))
+      if (hasApplicablePromotion(promoPieces, actualProductQuantity))
         productRule.promo.price * (actualProductQuantity / promoPieces)
       else
         productRule.promo.price
@@ -46,7 +46,7 @@ class Checkout(private val rules: List<Rule>) {
       productRule.productPrice
   }
 
-  private fun hasValidPromotion(promoPieces: Int, quantity: Int): Boolean =
+  private fun hasApplicablePromotion(promoPieces: Int, quantity: Int): Boolean =
       quantity % promoPieces == 0
 }
 
