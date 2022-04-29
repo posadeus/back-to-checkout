@@ -41,14 +41,37 @@ class Checkout(private val rules: List<Rule>) {
 
     val productRule = rules.first { product == it.productName }
 
-    return if (isProductInPromo(productRule, product))
-      productRule.promo?.price ?: productRule.productPrice
+    return if (isProductInPromo(productRule, product)) {
+
+      val promoPieces = productRule.promo?.pieces
+      val quantity = receipt.products[product]?.quantity
+
+      if (promoPieces != null && quantity != null) {
+
+        if (quantity.plus(1) % promoPieces == 0) {
+
+          val discountMultiplier = quantity.plus(1) / promoPieces
+
+          return productRule.promo.price * discountMultiplier
+        }
+      }
+
+      return productRule.promo?.price ?: productRule.productPrice
+    }
     else
       receipt.products[product]?.price ?: (0 + productRule.productPrice)
   }
 
-  private fun isProductInPromo(productRule: Rule, product: String) =
-      productRule.promo?.pieces == receipt.products[product]?.quantity?.plus(1)
+  private fun isProductInPromo(productRule: Rule, product: String): Boolean {
+
+    val promoPieces = productRule.promo?.pieces
+    val quantity = receipt.products[product]?.quantity
+
+    return if (promoPieces != null && quantity != null)
+      quantity.plus(1) % promoPieces == 0
+    else
+      false
+  }
 }
 
 data class PromoPrice(val quantity: Int,
