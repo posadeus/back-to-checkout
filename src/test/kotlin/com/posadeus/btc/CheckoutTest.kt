@@ -78,4 +78,25 @@ class CheckoutTest {
 
     assertTrue { checkout.price("AAABB") == 175 }
   }
+
+  @Test
+  internal fun `incremental price`() {
+
+    assertTrue { checkout.total() == 0 }
+
+    checkout.scan("A")
+    assertTrue { checkout.total() == 50 }
+
+    checkout.scan("B")
+    assertTrue { checkout.total() == 80 }
+
+    checkout.scan("A")
+    assertTrue { checkout.total() == 130 }
+
+    checkout.scan("A")
+    assertTrue { checkout.total() == 160 }
+
+    checkout.scan("B")
+    assertTrue { checkout.total() == 175 }
+  }
 }

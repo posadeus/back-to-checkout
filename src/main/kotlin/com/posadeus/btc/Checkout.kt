@@ -6,14 +6,20 @@ class Checkout(private val rules: List<Rule>) {
 
   fun price(products: String): Int {
 
-    when {
-      products.isEmpty() -> return 0
-      else -> products.chunked(1)
-          .forEach { receipt.products = addProductToReceipt(it) }
-    }
+    products.chunked(1).forEach { scan(it) }
 
-    return receipt.getTotal()
+    return total()
   }
+
+  fun scan(product: String) {
+    receipt.products = addProductToReceipt(product)
+  }
+
+  fun total(): Int =
+      when {
+        receipt.products.isEmpty() -> 0
+        else -> receipt.getTotal()
+      }
 
   private fun addProductToReceipt(product: String): Map<String, PromoPrice> =
       when {
@@ -22,16 +28,16 @@ class Checkout(private val rules: List<Rule>) {
       }
 
   private fun addNewProductToReceipt(product: String): Map<String, PromoPrice> =
-      HashMap(receipt.products + mapOf(product to PromoPrice(1, scan(product))))
+      HashMap(receipt.products + mapOf(product to PromoPrice(1, getPrice(product))))
 
   private fun updateProductAlreadyInTheReceipt(product: String): Map<String, PromoPrice> =
       HashMap(receipt.products +
               mapOf(product to
                         receipt.products[product]!!
                             .copy(quantity = receipt.products[product]!!.quantity.plus(1),
-                                  price = scan(product))))
+                                  price = getPrice(product))))
 
-  private fun scan(product: String): Int {
+  private fun getPrice(product: String): Int {
 
     val productRule = rules.first { product == it.productName }
     val promoPieces = productRule.promo?.pieces
