@@ -17,7 +17,7 @@ class Checkout(private val rules: List<Rule>) {
 
   fun total(): Int =
       when {
-        receipt.products.isEmpty() -> 0
+        receipt.isEmpty() -> 0
         else -> receipt.getTotal()
       }
 
