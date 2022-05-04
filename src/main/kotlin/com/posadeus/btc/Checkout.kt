@@ -12,7 +12,7 @@ class Checkout(private val rules: List<Rule>) {
   }
 
   fun scan(product: String) {
-    receipt.products = addProductToReceipt(product)
+    addProductToReceipt(product)
   }
 
   fun total(): Int =
@@ -21,21 +21,22 @@ class Checkout(private val rules: List<Rule>) {
         else -> receipt.getTotal()
       }
 
-  private fun addProductToReceipt(product: String): MutableMap<String, PromoPrice> =
-      when {
-        receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
-        else -> addNewProductToReceipt(product)
-      }
+  private fun addProductToReceipt(product: String) {
+    when {
+      receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
+      else -> addNewProductToReceipt(product)
+    }
+  }
 
-  private fun addNewProductToReceipt(product: String): MutableMap<String, PromoPrice> =
-      HashMap(receipt.products + mapOf(product to PromoPrice(1, getPrice(product))))
+  private fun addNewProductToReceipt(product: String) {
+    receipt.products[product] = PromoPrice(1, getPrice(product))
+  }
 
-  private fun updateProductAlreadyInTheReceipt(product: String): MutableMap<String, PromoPrice> =
-      HashMap(receipt.products +
-              mapOf(product to
-                        receipt.products[product]!!
-                            .copy(quantity = receipt.products[product]!!.quantity.plus(1),
-                                  price = getPrice(product))))
+  private fun updateProductAlreadyInTheReceipt(product: String) {
+    receipt.products[product] = receipt.products[product]!!
+        .copy(quantity = receipt.products[product]!!.quantity.plus(1),
+              price = getPrice(product))
+  }
 
   private fun getPrice(product: String): Int {
 
