@@ -7,9 +7,9 @@ class Receipt(var products: MutableMap<String, ProductInfo> = mutableMapOf()) {
           .reduce { acc, i -> acc + i }
 
   fun addProduct(product: String, productInfo: ProductInfo) {
-    this.products[product] = productInfo
+    products[product] = productInfo
   }
 
   fun hasProduct(product: String): Boolean =
-      this.products.containsKey(product)
+      products.containsKey(product)
 }

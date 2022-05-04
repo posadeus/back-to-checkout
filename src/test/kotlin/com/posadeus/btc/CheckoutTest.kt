@@ -68,6 +68,18 @@ class CheckoutTest {
   }
 
   @Test
+  internal fun `price of cart with seven A product is 310`() {
+
+    assertTrue { checkout.price("AAAAAAA") == 310 }
+  }
+
+  @Test
+  internal fun `price of cart with eleven A product is 490`() {
+
+    assertTrue { checkout.price("AAAAAAAAAAA") == 490 }
+  }
+
+  @Test
   internal fun `price of cart with three A and B product is 160`() {
 
     assertTrue { checkout.price("AAAB") == 160 }
