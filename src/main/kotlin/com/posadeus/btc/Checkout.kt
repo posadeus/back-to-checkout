@@ -12,7 +12,7 @@ class Checkout(private val rules: List<Rule>) {
   }
 
   fun scan(product: String) {
-    addProductToReceipt(product)
+    receipt.addProduct(product, addProductToReceipt(product))
   }
 
   fun total(): Int =
@@ -21,23 +21,19 @@ class Checkout(private val rules: List<Rule>) {
         else -> receipt.getTotal()
       }
 
-  private fun addProductToReceipt(product: String) {
-    when {
-      receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
-      else -> addNewProductToReceipt(product)
-    }
-  }
+  private fun addProductToReceipt(product: String): PromoPrice =
+      when {
+        receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
+        else -> addNewProductToReceipt(product)
+      }
 
-  private fun addNewProductToReceipt(product: String) {
-    receipt.addProduct(product, PromoPrice(1, getPrice(product)))
-  }
+  private fun addNewProductToReceipt(product: String): PromoPrice =
+      PromoPrice(1, getPrice(product))
 
-  private fun updateProductAlreadyInTheReceipt(product: String) {
-    receipt.addProduct(product,
-                       receipt.products[product]!!
-                           .copy(quantity = receipt.products[product]!!.quantity.plus(1),
-                                 price = getPrice(product)))
-  }
+  private fun updateProductAlreadyInTheReceipt(product: String): PromoPrice =
+      receipt.products[product]!!
+          .copy(quantity = receipt.products[product]!!.quantity.plus(1),
+                price = getPrice(product))
 
   private fun getPrice(product: String): Int {
 
