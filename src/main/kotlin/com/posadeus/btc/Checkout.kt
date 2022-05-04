@@ -29,13 +29,14 @@ class Checkout(private val rules: List<Rule>) {
   }
 
   private fun addNewProductToReceipt(product: String) {
-    receipt.products[product] = PromoPrice(1, getPrice(product))
+    receipt.addProduct(product, PromoPrice(1, getPrice(product)))
   }
 
   private fun updateProductAlreadyInTheReceipt(product: String) {
-    receipt.products[product] = receipt.products[product]!!
-        .copy(quantity = receipt.products[product]!!.quantity.plus(1),
-              price = getPrice(product))
+    receipt.addProduct(product,
+                       receipt.products[product]!!
+                           .copy(quantity = receipt.products[product]!!.quantity.plus(1),
+                                 price = getPrice(product)))
   }
 
   private fun getPrice(product: String): Int {
