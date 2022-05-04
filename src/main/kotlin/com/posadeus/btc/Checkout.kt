@@ -23,14 +23,14 @@ class Checkout(private val rules: List<Rule>) {
 
   private fun getProductInfo(product: String): ProductInfo =
       when {
-        receipt.products.containsKey(product) -> updateProductInfoAlreadyPresent(product)
-        else -> getNewProductInfo(product)
+        receipt.hasProduct(product) -> updateProductInfo(product)
+        else -> newProductInfo(product)
       }
 
-  private fun getNewProductInfo(product: String): ProductInfo =
+  private fun newProductInfo(product: String): ProductInfo =
       ProductInfo(1, getPrice(product))
 
-  private fun updateProductInfoAlreadyPresent(product: String): ProductInfo =
+  private fun updateProductInfo(product: String): ProductInfo =
       receipt.products[product]!!
           .copy(quantity = receipt.products[product]!!.quantity.plus(1),
                 price = getPrice(product))
@@ -39,20 +39,34 @@ class Checkout(private val rules: List<Rule>) {
 
     val productRule = rules.first { product == it.productName }
     val promoPieces = productRule.promo?.pieces
-    val actualProductQuantity = receipt.products[product]?.quantity?.plus(1)
+    val productQuantity = receipt.products[product]?.quantity?.plus(1) ?: 1
 
-    return if (promoPieces != null && actualProductQuantity != null)
-      if (hasApplicablePromotion(promoPieces, actualProductQuantity))
-        productRule.promo.price * (actualProductQuantity / promoPieces)
-      else if (promoPieces < actualProductQuantity)
-        productRule.promo.price + productRule.productPrice * (actualProductQuantity - promoPieces)
+    return if (promoPieces != null)
+      if (canApplyPromotion(promoPieces, productQuantity))
+        applyPromotion(productQuantity, promoPieces, productRule.promo.price)
+      else if (promoPieces < productQuantity)
+        halfPromotionApplied(productQuantity, promoPieces, productRule.promo.price, productRule.productPrice)
       else
-        productRule.productPrice * actualProductQuantity
+        noPromotionApplied(productQuantity, productRule.productPrice)
     else
       productRule.productPrice
   }
 
-  private fun hasApplicablePromotion(promoPieces: Int, quantity: Int): Boolean =
+  private fun noPromotionApplied(productQuantity: Int, productPrice: Int) =
+      productPrice * productQuantity
+
+  private fun halfPromotionApplied(productQuantity: Int,
+                                   promoPieces: Int,
+                                   promoPrice: Int,
+                                   productPrice: Int) =
+      promoPrice + productPrice * (productQuantity - promoPieces)
+
+  private fun applyPromotion(productQuantity: Int,
+                             promoPieces: Int,
+                             price: Int) =
+      price * (productQuantity / promoPieces)
+
+  private fun canApplyPromotion(promoPieces: Int, quantity: Int): Boolean =
       quantity % promoPieces == 0
 }
 

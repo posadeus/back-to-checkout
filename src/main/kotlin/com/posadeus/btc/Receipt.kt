@@ -9,4 +9,7 @@ class Receipt(var products: MutableMap<String, ProductInfo> = mutableMapOf()) {
   fun addProduct(product: String, productInfo: ProductInfo) {
     this.products[product] = productInfo
   }
+
+  fun hasProduct(product: String): Boolean =
+      this.products.containsKey(product)
 }
