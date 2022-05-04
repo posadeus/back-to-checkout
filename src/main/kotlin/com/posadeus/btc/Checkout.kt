@@ -2,7 +2,7 @@ package com.posadeus.btc
 
 class Checkout(private val rules: List<Rule>) {
 
-  private val receipt: Receipt = Receipt(emptyMap())
+  private val receipt: Receipt = Receipt(mutableMapOf())
 
   fun price(products: String): Int {
 
@@ -21,16 +21,16 @@ class Checkout(private val rules: List<Rule>) {
         else -> receipt.getTotal()
       }
 
-  private fun addProductToReceipt(product: String): Map<String, PromoPrice> =
+  private fun addProductToReceipt(product: String): MutableMap<String, PromoPrice> =
       when {
         receipt.products.containsKey(product) -> updateProductAlreadyInTheReceipt(product)
         else -> addNewProductToReceipt(product)
       }
 
-  private fun addNewProductToReceipt(product: String): Map<String, PromoPrice> =
+  private fun addNewProductToReceipt(product: String): MutableMap<String, PromoPrice> =
       HashMap(receipt.products + mapOf(product to PromoPrice(1, getPrice(product))))
 
-  private fun updateProductAlreadyInTheReceipt(product: String): Map<String, PromoPrice> =
+  private fun updateProductAlreadyInTheReceipt(product: String): MutableMap<String, PromoPrice> =
       HashMap(receipt.products +
               mapOf(product to
                         receipt.products[product]!!
