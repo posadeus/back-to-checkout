@@ -48,7 +48,3 @@ class Checkout(private val rules: List<Rule>) {
       productPrice
   }
 }
-
-data class ProductInfo(val quantity: Int,
-                       val price: Int)
-
