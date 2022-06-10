@@ -39,11 +39,11 @@ class Checkout(private val rules: List<Rule>) {
 
     val productRule = rules.first { product == it.productName }
     val promoPieces = productRule.promo?.pieces
-    val productQuantity = receipt.products[product]?.quantity?.plus(1) ?: 1
+    val newProductQuantity = receipt.products[product]?.quantity?.plus(1) ?: 1
     val productPrice = productRule.productPrice
 
     return if (promoPieces != null)
-      productRule.promo.applyPromotion(productQuantity, productPrice, promoPieces)
+      productRule.promo.applyPromotion(newProductQuantity, productPrice, promoPieces)
     else
       productPrice
   }
