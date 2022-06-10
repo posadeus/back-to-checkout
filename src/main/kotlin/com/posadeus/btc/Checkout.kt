@@ -4,14 +4,14 @@ class Checkout(private val rules: List<Rule>) {
 
   private val receipt: Receipt = Receipt(mutableMapOf())
 
-  fun price(products: String): Int {
+  fun price(products: Products): Int {
 
     products.chunked(1).forEach { scan(it) }
 
     return total()
   }
 
-  fun scan(product: String) {
+  fun scan(product: Product) {
     receipt.addProduct(product, getProductInfo(product))
   }
 
@@ -21,21 +21,21 @@ class Checkout(private val rules: List<Rule>) {
         else -> receipt.getTotal()
       }
 
-  private fun getProductInfo(product: String): ProductInfo =
+  private fun getProductInfo(product: Product): ProductInfo =
       when {
         receipt.hasProduct(product) -> updateProductInfo(product)
         else -> newProductInfo(product)
       }
 
-  private fun newProductInfo(product: String): ProductInfo =
+  private fun newProductInfo(product: Product): ProductInfo =
       ProductInfo(1, getPrice(product))
 
-  private fun updateProductInfo(product: String): ProductInfo =
+  private fun updateProductInfo(product: Product): ProductInfo =
       receipt.products[product]!!
           .copy(quantity = receipt.products[product]!!.quantity.plus(1),
                 price = getPrice(product))
 
-  private fun getPrice(product: String): Int {
+  private fun getPrice(product: Product): Int {
 
     val productRule = rules.first { product == it.productName }
     val promoPieces = productRule.promo?.pieces
