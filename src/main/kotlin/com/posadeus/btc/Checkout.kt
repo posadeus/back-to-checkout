@@ -33,15 +33,17 @@ class Checkout(private val rules: List<Rule>) {
       receipt.products[product]!!.plus(1)
 
   private fun getPrices(): List<Price> =
-      receipt.products
-          .map { product ->
-            val productRule = rules.first { product.key == it.productName }
+      receipt.products.map { getProductPrice(it) }
 
-            if (productRule.promo?.pieces != null)
-              productRule.promo.applyPromotion(product.value,
-                                               productRule.productPrice,
-                                               productRule.promo.pieces)
-            else
-              productRule.productPrice * product.value
-          }
+  private fun getProductPrice(product: Map.Entry<Product, Quantity>): Int {
+
+    val productRule = rules.first { product.key == it.productName }
+
+    return if (productRule.promo?.pieces != null)
+      productRule.promo.applyPromotion(product.value,
+                                       productRule.productPrice,
+                                       productRule.promo.pieces)
+    else
+      productRule.productPrice * product.value
+  }
 }
