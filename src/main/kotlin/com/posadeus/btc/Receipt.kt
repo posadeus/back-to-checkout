@@ -15,4 +15,7 @@ class Receipt(var products: MutableMap<Product, Quantity> = mutableMapOf()) {
 
   fun hasProduct(product: Product): Boolean =
       products.containsKey(product)
+
+  fun total(prices: List<Price>): Int =
+      prices.reduce { acc, i -> acc + i }
 }

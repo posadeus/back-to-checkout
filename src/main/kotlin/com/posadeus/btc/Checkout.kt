@@ -1,5 +1,7 @@
 package com.posadeus.btc
 
+typealias Price = Int
+
 class Checkout(private val rules: List<Rule>) {
 
   private val receipt: Receipt = Receipt(mutableMapOf())
@@ -18,7 +20,7 @@ class Checkout(private val rules: List<Rule>) {
   fun total(): Int =
       when {
         receipt.isEmpty() -> 0
-        else -> getPrice()
+        else -> receipt.total(getPrices())
       }
 
   private fun quantity(product: Product): Quantity =
@@ -30,17 +32,16 @@ class Checkout(private val rules: List<Rule>) {
   private fun updateQuantity(product: Product): Quantity =
       receipt.products[product]!!.plus(1)
 
-  private fun getPrice(): Int =
+  private fun getPrices(): List<Price> =
       receipt.products
           .map { product ->
-            val productDetail = rules.first { product.key == it.productName }
+            val productRule = rules.first { product.key == it.productName }
 
-            if (productDetail.promo?.pieces != null)
-              productDetail.promo.applyPromotion(product.value,
-                                                 productDetail.productPrice,
-                                                 productDetail.promo.pieces)
+            if (productRule.promo?.pieces != null)
+              productRule.promo.applyPromotion(product.value,
+                                               productRule.productPrice,
+                                               productRule.promo.pieces)
             else
-              productDetail.productPrice * product.value
+              productRule.productPrice * product.value
           }
-          .reduce { acc, i -> acc + i }
 }
