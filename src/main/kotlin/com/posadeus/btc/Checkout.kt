@@ -12,7 +12,7 @@ class Checkout(private val rules: List<Rule>) {
   }
 
   fun scan(product: Product) {
-    receipt.addProduct(product, getProductInfo(product))
+    receipt.addProduct(product, quantity(product))
   }
 
   fun total(): Int =
@@ -21,16 +21,13 @@ class Checkout(private val rules: List<Rule>) {
         else -> getPrice()
       }
 
-  private fun getProductInfo(product: Product): Quantity =
+  private fun quantity(product: Product): Quantity =
       when {
-        receipt.hasProduct(product) -> updateProductInfo(product)
-        else -> newProductInfo()
+        receipt.hasProduct(product) -> updateQuantity(product)
+        else -> 1
       }
 
-  private fun newProductInfo(): Quantity =
-      1
-
-  private fun updateProductInfo(product: Product): Quantity =
+  private fun updateQuantity(product: Product): Quantity =
       receipt.products[product]!!.plus(1)
 
   private fun getPrice(): Int =
