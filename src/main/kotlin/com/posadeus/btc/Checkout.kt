@@ -39,7 +39,7 @@ class Checkout(private val rules: List<Rule>) {
 
     val productRule = rules.first { product.key == it.productName }
 
-    return if (productRule.promo?.pieces != null)
+    return if (productRule.promo != null)
       productRule.promo.applyPromotion(product.value,
                                        productRule.productPrice,
                                        productRule.promo.pieces)
