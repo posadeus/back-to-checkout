@@ -2,13 +2,14 @@ package com.posadeus.btc
 
 typealias Product = String
 typealias Products = String
+typealias Quantity = Int
 
-class Receipt(var products: MutableMap<Product, ProductInfo> = mutableMapOf()) {
+class Receipt(var products: MutableMap<Product, Quantity> = mutableMapOf()) {
 
   fun isEmpty(): Boolean =
       products.isEmpty()
 
-  fun addProduct(product: Product, productInfo: ProductInfo) {
+  fun addProduct(product: Product, productInfo: Quantity) {
     products[product] = productInfo
   }
 
