@@ -8,10 +8,6 @@ class Receipt(var products: MutableMap<Product, ProductInfo> = mutableMapOf()) {
   fun isEmpty(): Boolean =
       products.isEmpty()
 
-  fun getTotal(): Int =
-      products.map { it.value.price }
-          .reduce { acc, i -> acc + i }
-
   fun addProduct(product: Product, productInfo: ProductInfo) {
     products[product] = productInfo
   }

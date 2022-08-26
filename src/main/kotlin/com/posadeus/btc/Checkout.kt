@@ -18,33 +18,32 @@ class Checkout(private val rules: List<Rule>) {
   fun total(): Int =
       when {
         receipt.isEmpty() -> 0
-        else -> receipt.getTotal()
+        else -> getPrice()
       }
 
   private fun getProductInfo(product: Product): ProductInfo =
       when {
         receipt.hasProduct(product) -> updateProductInfo(product)
-        else -> newProductInfo(product)
+        else -> newProductInfo()
       }
 
-  private fun newProductInfo(product: Product): ProductInfo =
-      ProductInfo(1, getPrice(product))
+  private fun newProductInfo(): ProductInfo =
+      ProductInfo(1)
 
   private fun updateProductInfo(product: Product): ProductInfo =
-      receipt.products[product]!!
-          .copy(quantity = receipt.products[product]!!.quantity.plus(1),
-                price = getPrice(product))
+      ProductInfo(receipt.products[product]!!.quantity.plus(1))
 
-  private fun getPrice(product: Product): Int {
+  private fun getPrice(): Int =
+      receipt.products
+          .map { product ->
+            val productDetail = rules.first { product.key == it.productName }
 
-    val productRule = rules.first { product == it.productName }
-    val promoPieces = productRule.promo?.pieces
-    val newProductQuantity = receipt.products[product]?.quantity?.plus(1) ?: 1
-    val productPrice = productRule.productPrice
-
-    return if (promoPieces != null)
-      productRule.promo.applyPromotion(newProductQuantity, productPrice, promoPieces)
-    else
-      productPrice
-  }
+            if (productDetail.promo?.pieces != null)
+              productDetail.promo.applyPromotion(product.value.quantity,
+                                                 productDetail.productPrice,
+                                                 productDetail.promo.pieces)
+            else
+              productDetail.productPrice * product.value.quantity
+          }
+          .reduce { acc, i -> acc + i }
 }
