@@ -9,8 +9,8 @@ class Receipt(var products: MutableMap<Product, Quantity> = mutableMapOf()) {
   fun isEmpty(): Boolean =
       products.isEmpty()
 
-  fun addProduct(product: Product, productInfo: Quantity) {
-    products[product] = productInfo
+  fun addProduct(product: Product, quantity: Quantity) {
+    products[product] = quantity
   }
 
   fun hasProduct(product: Product): Boolean =
