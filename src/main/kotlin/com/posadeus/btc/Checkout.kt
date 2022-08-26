@@ -4,7 +4,7 @@ typealias Price = Int
 
 class Checkout(private val rules: List<Rule>) {
 
-  private val receipt: Receipt = Receipt(mutableMapOf())
+  private val receipt = Receipt()
 
   fun price(products: Products): Int {
 
